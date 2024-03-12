@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "bw-test.fullname" . }}-bw-test-front
+  labels:
+  {{- include "bw-test.labels" . | nindent 4 }}
+spec:
+  type: {{ .Values.bwTestFront.type }}
+  selector:
+    app: bw-test
+  {{- include "bw-test.selectorLabels" . | nindent 4 }}
+  ports:
+	{{- .Values.bwTestFront.ports | toYaml | nindent 2 }}
