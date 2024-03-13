@@ -1,0 +1,31 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "bw-test.fullname" . }}-bw-test
+  labels:
+  {{- include "bw-test.labels" . | nindent 4 }}
+spec:
+  replicas: {{ .Values.bwTest.replicas }}
+  selector:
+    matchLabels:
+      app: bw-test
+    {{- include "bw-test.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      labels:
+        app: bw-test
+      {{- include "bw-test.selectorLabels" . | nindent 8 }}
+    spec:
+      containers:
+      - env:
+        - name: KUBERNETES_CLUSTER_DOMAIN
+          value: {{ quote .Values.kubernetesClusterDomain }}
+        image: {{ .Values.bwTest.bwTest.image.repository }}:{{ .Values.bwTest.bwTest.image.tag| default .Chart.AppVersion }}
+        name: bw-test
+        ports:
+        - containerPort: 3000
+          name: bw-test-port
+        resources: {{- toYaml .Values.bwTest.bwTest.resources | nindent 10 }}
+      imagePullSecrets:
+      - name: regcred-new
+      nodeSelector: {{- toYaml .Values.bwTest.nodeSelector | nindent 8 }}

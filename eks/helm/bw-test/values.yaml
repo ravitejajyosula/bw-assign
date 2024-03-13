@@ -1,0 +1,21 @@
+bwTestFront:
+  ports:
+  - port: 80
+    targetPort: 3000
+  type: LoadBalancer
+kubernetesClusterDomain: cluster.local
+bwTest:
+  bwTest:
+    image:
+      repository: registry.hub.docker.com/mailravi/nodejs_git
+      tag: latest
+    resources:
+      limits:
+        cpu: 250m
+        memory: 256Mi
+      requests:
+        cpu: 10m
+        memory: 128Mi
+  nodeSelector:
+    kubernetes.io/os: linux
+  replicas: 2
